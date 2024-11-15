@@ -106,7 +106,15 @@ class Board:
         Returns:
             a tuple of row, column index identifying the most constrained cell
         """
-        pass
+        minlen, mincellcoords = self.size, None
+        for rindex, row in enumerate(self.rows):
+            for cindex, cell in enumerate(row):
+                celllen = len(cell)
+                if isinstance(cell, list) and celllen < minlen:
+                    minlen = celllen
+                    mincellcoords = (rindex, cindex)
+
+        return mincellcoords
 
     def failure_test(self) -> bool:
         """Check if we've failed to correctly fill out the puzzle. If we find a cell
@@ -116,7 +124,11 @@ class Board:
         Returns:
             True if we have failed to fill out the puzzle, False otherwise
         """
-        pass
+        for rindex, row in enumerate(self.rows):
+            for cindex, cell in enumerate(row):
+                if isinstance(cell, list) and len(cell) == 0:
+                    return False
+        return True
 
     def goal_test(self) -> bool:
         """Check if we've completed the puzzle (if we've placed all the numbers).
@@ -125,7 +137,7 @@ class Board:
         Returns:
             True if we've placed all numbers, False otherwise
         """
-        pass
+        return self.num_nums_placed == self.size^2
 
     def update(self, row: int, column: int, assignment: int) -> None:
         """Assigns the given value to the cell given by passed in row and column
@@ -139,7 +151,23 @@ class Board:
             column - index of the column to assign
             assignment - value to place at given row, column coordinate
         """
-        pass
+        self.rows[row][column] = assignment
+
+        def operate(cell):
+            if isinstance(cell, list) and assignment in cell:
+                del cell.remove(assignment)
+
+        for subgrid_coordinate in self.subgrid_coordinates(row, column):
+            cell = self.rows[subgrid_coordinate[0]][subgrid_coordinate[1]]
+            operate(cell)
+        
+        for c in range(0, self.size):
+            operate(self.rows[row][c])
+
+        for r in range(0, self.size):
+            operate(self.rows[r][column])
+
+        self.num_nums_placed += 1
 
 
 def DFS(state: Board) -> Board:
