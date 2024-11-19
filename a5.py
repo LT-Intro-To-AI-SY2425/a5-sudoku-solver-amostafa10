@@ -184,11 +184,14 @@ def DFS(state: Board) -> Board:
         either None in the case of invalid input or a solved board
     """
     board_stack = Stack([state])
+    counter = 0
 
     while not board_stack.is_empty():
+        counter += 1
         board: Board = board_stack.pop()
 
         if board.goal_test():
+            print(f"iterations: {counter}")
             return board
 
         if board.failure_test():
@@ -217,11 +220,14 @@ def BFS(state: Board) -> Board:
         either None in the case of invalid input or a solved board
     """
     board_queue = Queue([state])
+    counter = 0
 
     while not board_queue.is_empty():
+        counter += 1
         board: Board = board_queue.pop()
 
         if board.goal_test():
+            print(f"iterations: {counter}")
             return board
 
         if board.failure_test():
