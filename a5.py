@@ -397,4 +397,6 @@ if __name__ == "__main__":
     print("<<<<<<<<<<<<<< Testing BFS on Second Game >>>>>>>>>>>>>>")
 
     test_dfs_or_bfs(False, second_moves)
+
+    print("DFS and BFS tests passed!")
     pass
